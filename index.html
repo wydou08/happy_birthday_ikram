@@ -3,12 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <title>Birthday Audio</title>
+  <!-- Make mobile browsers render at natural size -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Load WaveSurfer.js from CDN -->
+  <script src="https://unpkg.com/wavesurfer.js"></script>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: sans-serif;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    audio {
+      width: 90%;
+      max-width: 400px;
+      height: 60px;
+      margin-bottom: 20px;
+    }
+    #waveform {
+      width: 90%;
+      max-width: 600px;
+    }
+  </style>
 </head>
-<body style="background-color:black; color:white; text-align:center; font-family:sans-serif; margin-top:50px;">
+<body>
   <h2></h2>
-  <audio controls>
+  
+  <!-- Standard audio player -->
+  <audio id="audio" controls>
     <source src="message.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
+
+  <!-- Waveform visualization -->
+  <div id="waveform"></div>
+
+  <script>
+    // Create waveform instance
+    var wavesurfer = WaveSurfer.create({
+      container: '#waveform',
+      waveColor: 'white',
+      progressColor: 'blue',
+      height: 100
+    });
+
+    // Load the same audio file
+    wavesurfer.load('message.mp3');
+
+    // Sync play/pause between audio element and waveform
+    var audio = document.getElementById('audio');
+    audio.addEventListener('play', () => wavesurfer.play());
+    audio.addEventListener('pause', () => wavesurfer.pause());
+    wavesurfer.on('play', () => audio.play());
+    wavesurfer.on('pause', () => audio.pause());
+  </script>
 </body>
 </html>
