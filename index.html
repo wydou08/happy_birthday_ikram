@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Birthday Audio</title>
-  <!-- Make mobile browsers render at natural size -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Load WaveSurfer.js from CDN -->
   <script src="https://unpkg.com/wavesurfer.js"></script>
   <style>
     body {
@@ -23,48 +21,49 @@
     h2 {
       margin-bottom: 20px;
     }
-    audio {
-      width: 90%;
-      max-width: 400px;
-      height: 60px;
-      margin-bottom: 20px;
-    }
     #waveform {
       width: 90%;
       max-width: 600px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <h2></h2>
-  
-  <!-- Standard audio player -->
-  <audio id="audio" controls>
-    <source src="message.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
-
-  <!-- Waveform visualization -->
   <div id="waveform"></div>
+  <button id="playBtn">Play</button>
 
   <script>
-    // Create waveform instance
     var wavesurfer = WaveSurfer.create({
       container: '#waveform',
       waveColor: 'white',
       progressColor: 'blue',
-      height: 100
+      height: 100,
+      interact: false // disables clicking on waveform
     });
 
-    // Load the same audio file
     wavesurfer.load('message.mp3');
 
-    // Sync play/pause between audio element and waveform
-    var audio = document.getElementById('audio');
-    audio.addEventListener('play', () => wavesurfer.play());
-    audio.addEventListener('pause', () => wavesurfer.pause());
-    wavesurfer.on('play', () => audio.play());
-    wavesurfer.on('pause', () => audio.pause());
+    var playBtn = document.getElementById('playBtn');
+    playBtn.addEventListener('click', () => {
+      if (wavesurfer.isPlaying()) {
+        wavesurfer.pause();
+        playBtn.textContent = 'Play';
+      } else {
+        wavesurfer.seekTo(0); // always start from beginning
+        wavesurfer.play();
+        playBtn.textContent = 'Pause';
+      }
+    });
+
+    wavesurfer.on('finish', () => {
+      playBtn.textContent = 'Play'; // reset button when audio ends
+    });
   </script>
 </body>
 </html>
